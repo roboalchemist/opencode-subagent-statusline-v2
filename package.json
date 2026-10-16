@@ -1,0 +1,44 @@
+{
+  "name": "opencode-subagent-statusline-v2",
+  "version": "0.1.0",
+  "description": "OpenCode v2 TUI plugin: live subagent sidebar + status footer (running/completed/failed counts). Fork of sub-agent-statusline adapted for the OpenCode v2 plugin API.",
+  "keywords": [
+    "opencode",
+    "opencode-plugin",
+    "opencode-v2",
+    "subagent",
+    "statusline",
+    "tui",
+    "plugin"
+  ],
+  "homepage": "https://github.com/roboalchemist/opencode-subagent-statusline-v2#readme",
+  "bugs": {
+    "url": "https://github.com/roboalchemist/opencode-subagent-statusline-v2/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/roboalchemist/opencode-subagent-statusline-v2.git"
+  },
+  "license": "MIT",
+  "author": "roboalchemist",
+  "type": "module",
+  "main": "tui.js",
+  "exports": {
+    ".": "./tui.js",
+    "./tui": "./tui.js"
+  },
+  "files": [
+    "tui.js",
+    "model.js",
+    "model.test.js",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node --test model.test.js"
+  },
+  "peerDependencies": {
+    "@opentui/solid": ">=0.5.9 <0.6",
+    "solid-js": ">=1.9.12 <2"
+  }
+}
