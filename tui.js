@@ -122,9 +122,15 @@ function Footer(api, props) {
 export default {
   id: "local.subagent-statusline.v2",
   setup(api) {
-    const [settings, update] = api.storage.memory("subagent-statusline.v2.settings", {
-      initial: { history: true, collapsed: false },
-    })
+    // api.storage.memory exists on newer OpenCode builds; fall back to an
+    // in-memory store on builds where the storage domain is unavailable.
+    const useFallback = typeof api?.storage?.memory !== "function"
+    const fallbackStore = { history: true, collapsed: false }
+    const [settings, update] = useFallback
+      ? [fallbackStore, (draft) => { if (typeof draft === "function") draft(fallbackStore); else Object.assign(fallbackStore, draft) }]
+      : api.storage.memory("subagent-statusline.v2.settings", {
+          initial: { history: true, collapsed: false },
+        })
     const cleanup = []
     try {
       cleanup.push(api.ui.slot({ append: "sidebar.content", render: (props) => Sidebar(api, props, settings, update) }))
