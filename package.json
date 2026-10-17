@@ -1,6 +1,6 @@
 {
   "name": "opencode-subagent-statusline-v2",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "OpenCode v2 TUI plugin: live subagent sidebar + status footer (running/completed/failed counts). Fork of sub-agent-statusline adapted for the OpenCode v2 plugin API.",
   "keywords": [
     "opencode",
@@ -25,10 +25,12 @@
   "main": "tui.js",
   "exports": {
     ".": "./tui.js",
+    "./server": "./server.js",
     "./tui": "./tui.js"
   },
   "files": [
     "tui.js",
+    "server.js",
     "model.js",
     "model.test.js",
     "README.md",

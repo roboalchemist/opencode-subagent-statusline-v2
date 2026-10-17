@@ -122,6 +122,9 @@ function Footer(api, props) {
 export default {
   id: "local.subagent-statusline.v2",
   setup(api) {
+    // Only the TUI runtime provides api.ui; in any other context (e.g. the
+    // server process) there is nothing to render.
+    if (typeof api?.ui?.slot !== "function") return () => {}
     // api.storage.memory exists on newer OpenCode builds; fall back to an
     // in-memory store on builds where the storage domain is unavailable.
     const useFallback = typeof api?.storage?.memory !== "function"
