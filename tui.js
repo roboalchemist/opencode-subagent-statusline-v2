@@ -1,6 +1,6 @@
 import { createElement, insert, setProp } from "@opentui/solid"
 import { createEffect, createMemo, createSignal, onCleanup } from "solid-js"
-import { cleanTitle, descendants, duration, tokenLabel, visibleRows } from "./model.js"
+import { cleanTitle, descendants, duration, themeColor, tokenLabel, visibleRows } from "./model.js"
 
 function node(tag, props, children = []) {
   const element = createElement(tag)
@@ -10,12 +10,6 @@ function node(tag, props, children = []) {
 }
 const text = (fg, value) => node("text", { fg, wrapMode: "word" }, [value])
 const box = (props, children) => node("box", { flexDirection: "column", ...props }, children)
-
-function color(theme, path) {
-  let value = theme
-  for (const key of path.split(".")) value = value?.[key]
-  return value?.default ?? value
-}
 
 function Sidebar(api, props, settings, update) {
   const [now, setNow] = createSignal(Date.now())
@@ -27,10 +21,10 @@ function Sidebar(api, props, settings, update) {
   ))
   const all = createMemo(() => descendants(api.data.session.list(), props.sessionID))
   const running = createMemo(() => all().filter(({ session }) => api.data.session.status(session.id) === "running").length)
-  const muted = color(api.theme, "text.subdued")
-  const normal = color(api.theme, "text.default")
-  const success = color(api.theme, "text.feedback.success") ?? normal
-  const failure = color(api.theme, "text.feedback.error") ?? normal
+  const muted = themeColor(api.theme, "text.muted", "text.subdued")
+  const normal = themeColor(api.theme, "text.base", "text.default")
+  const success = themeColor(api.theme, "text.feedback.success") ?? normal
+  const failure = themeColor(api.theme, "text.feedback.error") ?? normal
 
   createEffect(() => {
     props.sessionID
@@ -110,7 +104,7 @@ function Sidebar(api, props, settings, update) {
 }
 
 function Footer(api, props) {
-  return text(color(api.theme, "text.subdued"), () => {
+  return text(themeColor(api.theme, "text.muted", "text.subdued"), () => {
     const route = api.ui.router.current()
     const parentID = props.sessionID ?? (route.type === "session" ? route.sessionID : undefined)
     const sessions = parentID ? descendants(api.data.session.list(), parentID).map((row) => row.session) : api.data.session.list().filter((s) => s.parentID)

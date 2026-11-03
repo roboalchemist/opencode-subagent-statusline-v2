@@ -1,6 +1,6 @@
 import { test } from "node:test"
 import assert from "node:assert/strict"
-import { descendants, visibleRows, stateOf, duration, tokenLabel } from "./model.js"
+import { descendants, visibleRows, stateOf, duration, themeColor, tokenLabel } from "./model.js"
 
 test("scope descendants, retain nesting and guard cycles", () => {
   const sessions = [{ id: "root", parentID: "grandchild" }, { id: "child", parentID: "root" },
@@ -22,4 +22,24 @@ test("old running sessions remain visible and finished elapsed time freezes", ()
   assert.equal(duration(session, "completed", 1e10), "1m 0s")
   assert.equal(duration(session, "running", 121000), "2m 0s")
   assert.equal(tokenLabel({ input: 1500, output: 30 }), "in 1.5K · out 30")
+})
+
+test("themeColor reads OpenCode 2.2 tokens and legacy theme names", () => {
+  const color = (value) => ({ buffer: [value, 0, 0, 255] })
+  const current = {
+    text: {
+      base: color(1),
+      muted: color(2),
+      feedback: { success: { base: color(3), muted: color(4) }, error: { base: color(5) } },
+    },
+  }
+  assert.equal(themeColor(current, "text.muted", "text.subdued"), current.text.muted)
+  assert.equal(themeColor(current, "text.base", "text.default"), current.text.base)
+  assert.equal(themeColor(current, "text.feedback.success"), current.text.feedback.success.base)
+  assert.equal(themeColor(current, "text.feedback.error"), current.text.feedback.error.base)
+
+  const legacy = { text: { subdued: "grey", default: "white", feedback: { success: "green" } } }
+  assert.equal(themeColor(legacy, "text.muted", "text.subdued"), "grey")
+  assert.equal(themeColor(legacy, "text.base", "text.default"), "white")
+  assert.equal(themeColor(legacy, "text.feedback.success"), "green")
 })
