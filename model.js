@@ -59,3 +59,15 @@ export function tokenLabel(tokens) {
 export function cleanTitle(value) {
   return String(value ?? "Subagent").replace(/[\x00-\x1f\x7f-\x9f]/g, " ").slice(0, 160)
 }
+
+export function themeColor(theme, ...paths) {
+  for (const path of paths) {
+    let value = theme
+    for (const key of path.split(".")) value = value?.[key]
+    // OpenCode 2.2 nests feedback colors as { base, muted }; older themes
+    // return the color directly.
+    value = value?.base ?? value?.default ?? value
+    if (value !== undefined) return value
+  }
+  return undefined
+}
